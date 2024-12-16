@@ -1,0 +1,7 @@
+res://menu.tscn
+res://game_board.tscn
+res://GameBoard.cs
+res://Trie.cs
+res://Menu.cs
+res://Solver.cs
+res://TrieManager.cs

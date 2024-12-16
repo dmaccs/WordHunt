@@ -1,0 +1,17 @@
+C:\Users\Dylan\Documents\wordhunt\.godot\mono\temp\bin\Debug\WordHunt.deps.json
+C:\Users\Dylan\Documents\wordhunt\.godot\mono\temp\bin\Debug\WordHunt.runtimeconfig.json
+C:\Users\Dylan\Documents\wordhunt\.godot\mono\temp\bin\Debug\WordHunt.dll
+C:\Users\Dylan\Documents\wordhunt\.godot\mono\temp\bin\Debug\WordHunt.pdb
+C:\Users\Dylan\Documents\wordhunt\.godot\mono\temp\bin\Debug\GodotSharp.dll
+C:\Users\Dylan\Documents\wordhunt\.godot\mono\temp\bin\Debug\GodotSharpEditor.dll
+C:\Users\Dylan\Documents\wordhunt\.godot\mono\temp\obj\Debug\WordHunt.csproj.AssemblyReference.cache
+C:\Users\Dylan\Documents\wordhunt\.godot\mono\temp\obj\Debug\WordHunt.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Dylan\Documents\wordhunt\.godot\mono\temp\obj\Debug\WordHunt.AssemblyInfoInputs.cache
+C:\Users\Dylan\Documents\wordhunt\.godot\mono\temp\obj\Debug\WordHunt.AssemblyInfo.cs
+C:\Users\Dylan\Documents\wordhunt\.godot\mono\temp\obj\Debug\WordHunt.csproj.CoreCompileInputs.cache
+C:\Users\Dylan\Documents\wordhunt\.godot\mono\temp\obj\Debug\WordHunt.csproj.Up2Date
+C:\Users\Dylan\Documents\wordhunt\.godot\mono\temp\obj\Debug\WordHunt.dll
+C:\Users\Dylan\Documents\wordhunt\.godot\mono\temp\obj\Debug\refint\WordHunt.dll
+C:\Users\Dylan\Documents\wordhunt\.godot\mono\temp\obj\Debug\WordHunt.pdb
+C:\Users\Dylan\Documents\wordhunt\.godot\mono\temp\obj\Debug\WordHunt.genruntimeconfig.cache
+C:\Users\Dylan\Documents\wordhunt\.godot\mono\temp\obj\Debug\ref\WordHunt.dll
