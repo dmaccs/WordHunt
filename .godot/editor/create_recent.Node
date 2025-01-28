@@ -1,8 +1,8 @@
+RichTextLabel
+Label
 Button
 VBoxContainer
 ScrollContainer
-Label
-RichTextLabel
 ColorRect
 Timer
 LineEdit

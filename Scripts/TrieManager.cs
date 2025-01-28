@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json;
 
+namespace WordHunt;
 public partial class TrieManager : Node
 {
     public Trie LoadTrieFromFile(string filePath)

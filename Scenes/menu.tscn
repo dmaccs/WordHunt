@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://c7ap5t4vgqg8c"]
 
-[ext_resource type="Script" path="res://Menu.cs" id="1_v48al"]
-[ext_resource type="PackedScene" uid="uid://b7d5lcbwknoqh" path="res://game_board.tscn" id="2_alc7y"]
-[ext_resource type="FontFile" uid="uid://cv56q1p1maghu" path="res://Fonts/SpaceMono-Bold.ttf" id="3_dakul"]
+[ext_resource type="Script" path="res://Scripts/Menu.cs" id="1_ren11"]
+[ext_resource type="FontFile" uid="uid://cv56q1p1maghu" path="res://Fonts/SpaceMono-Bold.ttf" id="2_dlawa"]
+[ext_resource type="PackedScene" uid="uid://b7d5lcbwknoqh" path="res://Scenes/game_board.tscn" id="3_f1vu3"]
 
 [node name="Menu" type="Control"]
 layout_mode = 3
@@ -11,8 +11,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_v48al")
-CustomFont = ExtResource("3_dakul")
+script = ExtResource("1_ren11")
+CustomFont = ExtResource("2_dlawa")
 
 [node name="Play" type="Button" parent="."]
 unique_name_in_owner = true
@@ -44,10 +44,9 @@ placeholder_text = "Write grid letters here!"
 alignment = 1
 max_length = 16
 
-[node name="GameBoard" parent="." instance=ExtResource("2_alc7y")]
+[node name="GameBoard" parent="." instance=ExtResource("3_f1vu3")]
 visible = false
 layout_mode = 1
-anchors_preset = 15
 
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
 unique_name_in_owner = true
@@ -72,11 +71,22 @@ alignment = 1
 unique_name_in_owner = true
 z_index = -1
 z_as_relative = false
+layout_mode = 0
 offset_top = 2.0
 offset_right = 601.0
 offset_bottom = 601.0
 mouse_filter = 2
 color = Color(0.74902, 0.603922, 0.388235, 1)
+
+[node name="HighScore" type="RichTextLabel" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 13.0
+offset_top = 13.0
+offset_right = 576.0
+offset_bottom = 52.0
+bbcode_enabled = true
+text = "High Score: 0"
 
 [connection signal="button_down" from="Play" to="." method="_on_play_button_down"]
 [connection signal="button_down" from="Solve" to="." method="_on_solve_button_down"]

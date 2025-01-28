@@ -1,13 +1,12 @@
 using Godot;
-using System;
 using System.Collections.Generic;
 
+namespace WordHunt;
 public partial class Menu : Control
 {
 	//game_board gameBoard;
 	LineEdit lettersAvailable;
 	public Trie trie;
-
 	TrieManager trieManager;
 	Solver solver;
 	GameBoard gameBoard;
@@ -17,14 +16,21 @@ public partial class Menu : Control
 	VBoxContainer wordList;
 	ScrollContainer scrollContainer;
 	ColorRect Background;
+	RichTextLabel HighScoreLabel; 
+	public int HighScore = 0;
+
+	private ConfigManager configManager;
 
 	[Export] public Font CustomFont;
-
-	bool firstTime = false; //Set to true to create a Trie from scratch
 	
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		configManager = new ConfigManager();
+        bool firstTime = configManager.LoadFirstTimeStatus();
+		HighScoreLabel = GetNode<RichTextLabel>("HighScore");
+		SetHighScore(configManager.GetHighScore());
+		configManager.GetHighScore();
 		lettersAvailable = GetNode<LineEdit>("LineEdit");
 		trieManager = new TrieManager();
 		gameBoard = GetNode<GameBoard>("GameBoard");
@@ -36,15 +42,26 @@ public partial class Menu : Control
 		Background = GetNode<ColorRect>("Background");
 		
 		if(firstTime){
+			GD.Print("First Time");
 			trie = new Trie();
 			trie.PopulateFromFile("res://Dictionary/CollinsDict2019.txt", trie);
 			trieManager.SaveTrieToFile(trie, "user://trie_data.json");
+			configManager.SaveFirstTimeStatus(false);
 		} else {
+			GD.Print("Not First Time");
 			trie = trieManager.LoadTrieFromFile("user://trie_data.json");
 		}
 		solver = new Solver();
 		solver.instantiateSolver(trie);
 		
+	}
+
+	public void SetHighScore(int previoiusScore){
+		if(previoiusScore > HighScore){
+			HighScoreLabel.Text = "High Score: " + previoiusScore.ToString();
+			HighScore = previoiusScore;
+			configManager.SaveHighScore(HighScore);
+		}
 	}
 
 	public void _on_play_button_down(){
@@ -57,21 +74,8 @@ public partial class Menu : Control
 			Background.Visible = false;
 			scrollContainer.Visible = false;
 			wordList.Visible = false;
+			HighScoreLabel.Visible = false;
 		}
-	}
-
-	public void GameOver(string PreviousBoard){
-		if(gameBoard != null){
-			gameBoard.Visible = false;
-			playButton.Visible = true;
-			solveButton.Visible = true;
-			solveInput.Visible = true;
-			Background.Visible = true;
-			scrollContainer.Visible = true;
-			wordList.Visible = true;
-		}
-		lettersAvailable.Text = PreviousBoard;
-		_on_solve_button_down();
 	}
 
 	public void _on_solve_button_down(){
@@ -97,4 +101,21 @@ public partial class Menu : Control
             wordList.AddChild(label);
 		}
 	}
+
+	public void GameOver(string PreviousBoard){
+		if(gameBoard != null){
+			gameBoard.Visible = false;
+			playButton.Visible = true;
+			solveButton.Visible = true;
+			solveInput.Visible = true;
+			Background.Visible = true;
+			scrollContainer.Visible = true;
+			wordList.Visible = true;
+			HighScoreLabel.Visible = true;
+		}
+		lettersAvailable.Text = PreviousBoard;
+		_on_solve_button_down();
+	}
+
+	
 }

@@ -1,7 +1,7 @@
-res://menu.tscn
-res://game_board.tscn
-res://GameBoard.cs
-res://Trie.cs
-res://Menu.cs
-res://Solver.cs
-res://TrieManager.cs
+res://Scenes/menu.tscn
+res://Scenes/game_board.tscn
+res://Scripts/GameBoard.cs
+res://Scripts/TrieManager.cs
+res://Scripts/Solver.cs
+res://Scripts/Trie.cs
+res://Scripts/Menu.cs

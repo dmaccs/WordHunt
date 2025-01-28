@@ -1,11 +1,29 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
+namespace WordHunt;
 public partial class GameBoard : Control
 {
+    // Grid constants
+    private const int GRID_SIZE = 4;
+    private const int TOTAL_SQUARES = GRID_SIZE * GRID_SIZE;
+    private const int LETTER_DISTRIBUTION_SIZE = 97;
+    
+    // UI element prefixes/names
+    private const string COLOR_RECT_PREFIX = "ColorRect";
+    private const string RICH_TEXT_PREFIX = "RichTextLabel";
+    
+    // Text formatting
+    private const string CENTER_BLACK_TEXT_FORMAT = "[center][color=#000000]{0}";
+    
+    // Layout constants
+    private const int SQUARE_OFFSET_X = 60;
+    private const int SQUARE_OFFSET_Y = 80;
+    private const int SQUARE_SIZE = 121;
+
 	char[] letterDistribution = {
 	'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 				// A-9
     'B', 'B',                                     				// B-2
@@ -39,12 +57,10 @@ public partial class GameBoard : Control
 	bool gameStarted = false;
 	int score = 0;
 	Timer timer;
-
 	Color defaultColor = new("#bf9a63");
 	Color Yellow = new("#dbea00");
 	Color Green = new("#31be34");
 	Color Grey = new("#9ba49a");
-
 	GridContainer gridContainer;
 	RichTextLabel scoreLabel;
 	RichTextLabel wordCountLabel;
@@ -64,6 +80,7 @@ public partial class GameBoard : Control
 
 	public override void _Ready()
 	{
+
 		gridContainer = GetNode<GridContainer>("GridContainer");
 		timer = GetNode<Timer>("Timer");
 		defaultColor = new Color("#bf9a63");
@@ -119,6 +136,8 @@ public partial class GameBoard : Control
 
 	public void _on_timer_timeout()
 	{
+		Menu menu = (Menu)GetParent();
+		menu.SetHighScore(score);
 		gameStarted = false;
 		BackToMenu.Visible = true;
 		FinalScore.Text = "[center][color=#000000]SCORE: " + score.ToString();
@@ -155,7 +174,7 @@ public partial class GameBoard : Control
 		menu.GameOver(currBoard);
 	}
 
-	private int indexConverter(int x, int y)
+	private int IndexConverter(int x, int y)
 	{
 		return x + y * 4;
 	}
@@ -179,11 +198,11 @@ public partial class GameBoard : Control
 				if (GetRect().HasPoint(mouseEvent.Position))
 				{
 					Vector2 mousePos = GetLocalMousePosition();
-					int mouseX = (int)mousePos.X - 60;
-					int mouseY = (int)mousePos.Y - 80;
-					if (validSquare(mouseX, mouseY))
+					int mouseX = (int)mousePos.X - SQUARE_OFFSET_X;
+					int mouseY = (int)mousePos.Y - SQUARE_OFFSET_Y;
+					if (ValidSquare(mouseX, mouseY))
 					{
-						selectSquare(mouseX / 121, mouseY / 121);
+						SelectSquare(mouseX / SQUARE_SIZE, mouseY / SQUARE_SIZE);
 						isDragging = true;
 					}
 
@@ -192,22 +211,22 @@ public partial class GameBoard : Control
 			if (mouseEvent.ButtonIndex == MouseButton.Left && !mouseEvent.Pressed)
 			{
 				isDragging = false;
-				attemptWord();
+				AttemptWord();
 			}
 		}
 		if (isDragging && @event is InputEventMouseMotion motionEvent)
 		{
 			Vector2 mousePos = GetLocalMousePosition();
-			int mouseX = (int)mousePos.X - 60;
-			int mouseY = (int)mousePos.Y - 80;
-			if (validSquare(mouseX, mouseY))
+			int mouseX = (int)mousePos.X - SQUARE_OFFSET_X;
+			int mouseY = (int)mousePos.Y - SQUARE_OFFSET_Y;
+			if (ValidSquare(mouseX, mouseY))
 			{
-				selectSquare(mouseX / 121, mouseY / 121);
+				SelectSquare(mouseX / SQUARE_SIZE, mouseY / SQUARE_SIZE);
 			}
 		}
 	}
 
-	private bool validSquare(int x, int y)
+	private static bool ValidSquare(int x, int y)
 	{
 		if (x > 480 || y > 480 || x < 0 || y < 0)
 		{
@@ -224,13 +243,13 @@ public partial class GameBoard : Control
 		return true;
 	}
 
-	private string getWord()
+	private string GetWord()
 	{
 		string currWord = "";
 		List<int> indicies = new List<int>();
 		foreach (Tuple<int, int> t in selectedSquares)
 		{
-			indicies.Add(indexConverter(t.Item1, t.Item2));
+			indicies.Add(IndexConverter(t.Item1, t.Item2));
 		}
 		foreach (int i in indicies)
 		{
@@ -239,13 +258,13 @@ public partial class GameBoard : Control
 		return currWord;
 	}
 
-	private void attemptWord()
+	private void AttemptWord()
 	{
 		string currWord = "";
-		List<int> indicies = new List<int>();
+		List<int> indicies = new();
 		foreach (Tuple<int, int> t in selectedSquares)
 		{
-			indicies.Add(indexConverter(t.Item1, t.Item2));
+			indicies.Add(IndexConverter(t.Item1, t.Item2));
 		}
 		if (indicies.Count > 2)
 		{
@@ -310,7 +329,7 @@ public partial class GameBoard : Control
 
 	}
 
-	public void selectSquare(int x, int y)
+	public void SelectSquare(int x, int y)
 	{
 		if (!ValidSelection(x, y))
 		{
@@ -331,7 +350,7 @@ public partial class GameBoard : Control
 		{
 			return;
 		}
-		string currWord = getWord();
+		string currWord = GetWord();
 		if (currWord.Length < 3)
 		{
 			return;
@@ -354,8 +373,8 @@ public partial class GameBoard : Control
 	{
 		foreach (Tuple<int, int> t in selectedSquares)
 		{
-			int squareNumber = 1 + t.Item1 + 4 * t.Item2;
-			string squareName = "ColorRect" + squareNumber.ToString();
+			int squareNumber = 1 + t.Item1 + GRID_SIZE * t.Item2;
+			string squareName = COLOR_RECT_PREFIX + squareNumber.ToString();
 			ColorRect currSquare = gridContainer.GetNode<ColorRect>(squareName);
 			currSquare.Color = color;
 		}
@@ -365,10 +384,10 @@ public partial class GameBoard : Control
 	{
 		currBoard = "";
 		Random random = new Random();
-		char[] chars = new char[16];
-		for (int i = 0; i < 16; i++)
+		char[] chars = new char[TOTAL_SQUARES];
+		for (int i = 0; i < TOTAL_SQUARES; i++)
 		{
-			chars[i] = letterDistribution[random.Next(0, 97)];
+			chars[i] = letterDistribution[random.Next(0, LETTER_DISTRIBUTION_SIZE)];
 		}
 		int count = 0;
 
@@ -376,10 +395,10 @@ public partial class GameBoard : Control
 		{
 			if (child is ColorRect colorRect)
 			{
-				RichTextLabel richTextLabel = colorRect.GetNode<RichTextLabel>("RichTextLabel");
+				RichTextLabel richTextLabel = colorRect.GetNode<RichTextLabel>(RICH_TEXT_PREFIX);
 				if (richTextLabel != null)
 				{
-					richTextLabel.Text = "[center][color=#000000]" + chars[count].ToString();
+					richTextLabel.Text = string.Format(CENTER_BLACK_TEXT_FORMAT, chars[count].ToString());
 					count++;
 				}
 			}
@@ -392,8 +411,8 @@ public partial class GameBoard : Control
 	}
 	public void GenerateGame(string GameInput)
 	{
-		char[] chars = new char[16];
-		for (int i = 0; i < 16; i++)
+		char[] chars = new char[TOTAL_SQUARES];
+		for (int i = 0; i < TOTAL_SQUARES; i++)
 		{
 			chars[i] = GameInput[i];
 		}
@@ -405,11 +424,11 @@ public partial class GameBoard : Control
 			if (child is ColorRect colorRect)
 			{
 				// Get the RichTextLabel child of the ColorRect
-				RichTextLabel richTextLabel = colorRect.GetNode<RichTextLabel>("RichTextLabel");
+				RichTextLabel richTextLabel = colorRect.GetNode<RichTextLabel>(RICH_TEXT_PREFIX);
 
 				if (richTextLabel != null)
 				{
-					richTextLabel.Text = "[center][color=#000000]" + chars[count].ToString();
+					richTextLabel.Text = string.Format(CENTER_BLACK_TEXT_FORMAT, chars[count].ToString());
 					count++;
 				}
 			}

@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
+namespace WordHunt;
 public partial class Trie : Node
 {
 	// Called when the node enters the scene tree for the first time.
